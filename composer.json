@@ -1,0 +1,29 @@
+{
+  "name": "esoftplay/async",
+  "type": "library",
+  "description": "async manager for esoftplay framework",
+  "keywords": ["library", "gearman", "worker", "manager"],
+  "homepage": "https://github.com/esoftplay/async",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "esoftplay",
+      "email": "danang@fisip.net",
+      "homepage": "http://fisip.net/"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "ext-posix": "*",
+    "ext-pcntl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "esoftplay\\gearman\\" : "src/"
+    }
+  },
+  "suggest": {
+    "esoftplay/console": "A php console application library.",
+    "esoftplay/php-validate": "Very lightweight data validate tool"
+  }
+}

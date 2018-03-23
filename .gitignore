@@ -1,0 +1,14 @@
+!.gitkeep
+!README.md
+*.log
+*.patch
+*.pid
+*.swp
+*.zip
+.DS_Store
+.idea/
+.phpintel/
+/server.sh
+composer.lock
+logs/
+vendor/

@@ -3,6 +3,9 @@ BASEDIR=$(dirname $(dirname "$0"))
 PHP=$(which php)
 SVR=127.0.0.1:5888
 mkdir -p $BASEDIR/logs
+brew tap homebrew/services
+brew install gearman
+brew services start gearman
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
 "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

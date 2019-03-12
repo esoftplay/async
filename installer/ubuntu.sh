@@ -3,7 +3,20 @@ BASEDIR=$(dirname $(dirname "$0"))
 PHP=$(which php)
 SVR=127.0.0.1:5888
 mkdir -p $BASEDIR/logs
-sudo apt-get -y install lsof
+# sudo apt-get -y install gearman-job-server gearman-tools gearman-server php-gearman composer lsof
+# sudo apt-get -y install gearman-job-server libgearman-dev php7.0-dev php-pear wget unzip re2c composer lsof
+sudo apt-get -y install gearman-job-server libgearman-dev php-pear wget unzip re2c composer lsof
+cd /tmp/
+sudo wget https://github.com/wcgallego/pecl-gearman/archive/master.zip
+unzip master.zip
+cd pecl-gearman-master
+sudo phpize
+./configure
+sudo make
+sudo make install
+echo "extension=gearman.so" | sudo tee /etc/php/7.0/mods-available/gearman.ini
+sudo phpenmod -v ALL -s ALL gearman
+
 sudo echo '#!/bin/sh
 
 ### BEGIN INIT INFO
@@ -48,8 +61,8 @@ stop() {
 }
 
 status() {
-	gearadmin --status
-	gearadmin --workers
+  gearadmin --status
+  gearadmin --workers
 }
 
 case "$1" in

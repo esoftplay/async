@@ -11,4 +11,4 @@
 /server.sh
 composer.lock
 logs/
-vendor/
+# vendor/

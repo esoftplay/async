@@ -1,11 +1,15 @@
 #!/usr/bin/env sh
 BASEDIR=$(dirname $(dirname "$0"))
 PHP=$(which php)
+PHP_VER=$($PHP -v | grep -Po '(?<=PHP )([0-9]+.[0-9]+)')
 SVR=127.0.0.1:5888
 mkdir -p $BASEDIR/logs
-# sudo apt-get -y install gearman-job-server gearman-tools gearman-server php-gearman composer lsof
-# sudo apt-get -y install gearman-job-server libgearman-dev php7.0-dev php-pear wget unzip re2c composer lsof
-sudo apt-get -y install gearman-job-server libgearman-dev php-pear wget unzip re2c composer lsof
+
+# opsi -e dan +e digunakan untuk menghentikan proses jika gagal install karena tidak ditemukan dalam repository ubuntunya
+set -e
+sudo apt-get -y install php$PHP_VER-dev gearman-tools gearman-job-server libgearman-dev php-pear wget unzip re2c composer lsof
+set +e
+
 cd /tmp/
 sudo wget https://github.com/wcgallego/pecl-gearman/archive/master.zip
 unzip master.zip
@@ -14,10 +18,10 @@ sudo phpize
 ./configure
 sudo make
 sudo make install
-echo "extension=gearman.so" | sudo tee /etc/php/7.0/mods-available/gearman.ini
+echo "extension=gearman.so" | sudo tee /etc/php/$PHP_VER/mods-available/gearman.ini
 sudo phpenmod -v ALL -s ALL gearman
 
-sudo echo '#!/bin/sh
+echo '#!/bin/sh
 
 ### BEGIN INIT INFO
 # Provides:          esoftplay_async
@@ -85,11 +89,11 @@ case "$1" in
     ;;
 esac
 
-exit 0'  > /etc/init.d/esoftplay_async
+exit 0' | sudo tee /etc/init.d/esoftplay_async
 sudo chmod +x /etc/init.d/esoftplay_async
 sudo update-rc.d esoftplay_async defaults
 sudo service esoftplay_async start
 
 # sudo chkconfig --add esoftplay_async
 # sudo chkconfig --level 2345 esoftplay_async on
-# /etc/init.d/esoftplay_async start
+/etc/init.d/esoftplay_async status

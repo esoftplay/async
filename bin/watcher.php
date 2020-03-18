@@ -33,13 +33,21 @@ class aWatcher
 						$result = mysqli_query($DBLINK, 'SHOW FULL PROCESSLIST');
 						while ($row=mysqli_fetch_array($result))
 						{
-							$process_id=$row['Id'];
+							// print_r($row);
 							if ($row['Command'] == 'Sleep')
 							{
-								$q = 'KILL '.$process_id;
-								mysqli_query($DBLINK, 'KILL '.$process_id);
-								print_r($q);
+								// echo "\n\n== ".$row['Command']." -- ".$row['Id'];
+								$process_id=$row['Id'];
+								if ($process_id != 2)
+								{
+									$q = 'KILL '.$process_id;
+									mysqli_query($DBLINK, 'KILL '.$process_id);
+									print_r($q);
+								}
+							}else{
+								// echo "\n\n-- ".$row['Command']." -- ".$row['Id'];
 							}
+							// echo "\n";
 						}
 						mysqli_close($DBLINK);
 					}

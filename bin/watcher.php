@@ -16,6 +16,38 @@ class aWatcher
 		}
 	}
 
+	public function clean_db()
+	{
+		$file = '/root/bin/db_del';
+		if (file_exists($file))
+		{
+			$text = @file_get_contents($file);
+			if (!empty($text) && preg_match('~mysqli_connect\(([^\)]+)~is', $text, $match))
+			{
+				$arr = @json_decode('['.str_replace("'", '"', $match[1]).']', 1);
+				if (is_array($arr) && !empty($arr))
+				{
+					$DBLINK = mysqli_connect($arr[0], $arr[1], $arr[2]);// or die("SQL Error : Cannot login to MySQL");
+					if ($DBLINK)
+					{
+						$result = mysqli_query($DBLINK, 'SHOW FULL PROCESSLIST');
+						while ($row=mysqli_fetch_array($result))
+						{
+							$process_id=$row['Id'];
+							if ($row['Command'] == 'Sleep')
+							{
+								$q = 'KILL '.$process_id;
+								mysql_query($DBLINK, 'KILL '.$process_id);
+								pr($q, __FILE__.':'.__LINE__);
+							}
+						}
+						mysqli_close($DBLINK);
+					}
+				}
+			}
+		}
+	}
+
 	public function getStatus()
 	{
 		$status = null;
@@ -72,6 +104,7 @@ class aWatcher
 
 	public function watcher()
 	{
+		$this->clean_db();
 		$out = $this->getStatus();
 		if (!$out)
 		{
@@ -90,6 +123,7 @@ class aWatcher
 		return $out;
 	}
 }
+
 $p = new aWatcher();
 $r = $p->watcher();
 print_r($r);

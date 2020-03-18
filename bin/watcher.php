@@ -37,8 +37,8 @@ class aWatcher
 							if ($row['Command'] == 'Sleep')
 							{
 								$q = 'KILL '.$process_id;
-								mysql_query($DBLINK, 'KILL '.$process_id);
-								pr($q, __FILE__.':'.__LINE__);
+								mysqli_query($DBLINK, 'KILL '.$process_id);
+								print_r($q);
 							}
 						}
 						mysqli_close($DBLINK);

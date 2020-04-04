@@ -75,9 +75,9 @@ class aWatcher
 					{
 						$function = $matches[1];
 						$status['operations'][$function] = array(
-							'function' => $function,
-							'total' => $matches[2],
-							'running' => $matches[3],
+							'function'         => $function,
+							'total'            => $matches[2],
+							'running'          => $matches[3],
 							'connectedWorkers' => $matches[4],
 						);
 					}
@@ -95,9 +95,9 @@ class aWatcher
 					{
 						$fd = $matches[1];
 						$status['connections'][$fd] = array(
-							'fd' => $fd,
-							'ip' => $matches[2],
-							'id' => $matches[3],
+							'fd'       => $fd,
+							'ip'       => $matches[2],
+							'id'       => $matches[3],
 							'function' => $matches[4],
 						);
 					}
@@ -116,17 +116,18 @@ class aWatcher
 		$out = $this->getStatus();
 		if (!$out)
 		{
-			$cmds = array(
-				'uname -a',
-				'/etc/init.d/esoftplay_async restart',
-				'gearadmin --status'
-				);
-			$out = array();
-			foreach ($cmds as $cmd)
+			$file = '/usr/local/bin/ars';
+			if (file_exists($file))
 			{
-				$out[$cmd] = shell_exec($cmd);
+				shell_exec('/bin/sh '.$file);
+			}else{
+				file_put_contents($file, '#!/bin/sh'
+				."\n".'SERVERINI=`hostname`'
+				."\n".'echo "/etc/init.d/esoftplay_async restart && /usr/local/bin/tm \'restart async di ${SERVERINI} sudah selesai\' -345399808" >> /tmp/tmp.sh');
+				shell_exec('chown root:root '.$file);
+				shell_exec('chmod 755 '.$file);
+				shell_exec('chcon system_u:object_r:bin_t:s0 '.$file);
 			}
-			tm(print_r($out, 1), -345399808); // group monitor - async
 		}
 		return $out;
 	}

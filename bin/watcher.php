@@ -122,8 +122,15 @@ class aWatcher
 				shell_exec('/bin/sh '.$file);
 			}else{
 				file_put_contents($file, '#!/bin/sh'
-				."\n".'SERVERINI=`hostname`'
-				."\n".'echo "/etc/init.d/esoftplay_async restart && /usr/local/bin/tm \'restart async di ${SERVERINI} sudah selesai\' -345399808" >> /tmp/tmp.sh');
+					."\n".''
+					."\n".'SERVERINI=`hostname`'
+					."\n".'FILE="/tmp/async-tmp.txt"'
+					."\n".'if [ -f "$FILE" ]; then'
+					."\n".'	echo "please wait..."'
+					."\n".'else'
+					."\n".'	echo \'1\' > "$FILE"'
+					."\n".'	echo "/etc/init.d/esoftplay_async restart && /usr/local/bin/tm \'restart async di ${SERVERINI} sudah selesai\' -345399808  && /bin/rm -f ${FILE}" >> /tmp/tmp.sh'
+					."\n".'fi');
 				shell_exec('chown root:root '.$file);
 				shell_exec('chmod 755 '.$file);
 				shell_exec('chcon system_u:object_r:bin_t:s0 '.$file);

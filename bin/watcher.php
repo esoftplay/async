@@ -112,7 +112,7 @@ class aWatcher
 
 	public function watcher()
 	{
-		$this->clean_db();
+		// $this->clean_db();
 		$out = $this->getStatus();
 		if (!$out)
 		{

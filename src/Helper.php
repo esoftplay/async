@@ -54,11 +54,11 @@ class Helper
         reset($params);
 
         while (list(, $p) = each($params)) {
-            if ($p{0} === '-') {
+            if ($p[0] === '-') {
                 $pName = substr($p, 1);
                 $value = true;
 
-                if ($pName{0} === '-') {
+                if ($pName[0] === '-') {
                     // long-opt (--<param>)
                     $pName = substr($pName, 1);
 
@@ -71,7 +71,7 @@ class Helper
                 // check if next parameter is a descriptor or a value
                 $nxParam = current($params);
 
-                if (!in_array($pName, $noOpts) && $value === true && $nxParam !== false && $nxParam{0} !== '-') {
+                if (!in_array($pName, $noOpts) && $value === true && $nxParam !== false && $nxParam[0] !== '-') {
                     list(, $value) = each($params);
                 }
 
@@ -137,7 +137,7 @@ class Helper
         if (DIRECTORY_SEPARATOR === '\\') {
             $result = $text;
         } else {
-            if (!is_numeric($style{0})) {
+            if (!is_numeric($style[0])) {
                 $style = isset(self::$styles[$style]) ? self::$styles[$style] : '0';
             }
 

@@ -53,7 +53,7 @@ class Helper
         $params = $GLOBALS['argv'];
         reset($params);
 
-        while (list(, $p) = each($params)) {
+        while ($p = current($params)) {
             if ($p[0] === '-') {
                 $pName = substr($p, 1);
                 $value = true;
@@ -72,7 +72,7 @@ class Helper
                 $nxParam = current($params);
 
                 if (!in_array($pName, $noOpts) && $value === true && $nxParam !== false && $nxParam[0] !== '-') {
-                    list(, $value) = each($params);
+                    $value = current($params);
                 }
 
                 $result[$pName] = $value;

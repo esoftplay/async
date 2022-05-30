@@ -7,6 +7,7 @@ mkdir -p $BASEDIR/logs
 sudo echo '#!/bin/bash
 # chkconfig: 2345 20 80
 # description: Esoftplay async daemon
+ulimit -n 16384
 
 # Source function library.
 . /etc/init.d/functions

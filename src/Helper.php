@@ -53,7 +53,7 @@ class Helper
         $params = $GLOBALS['argv'];
         reset($params);
 
-        while ($p = current($params)) {
+        foreach($params as $key => $p) {
             if ($p[0] === '-') {
                 $pName = substr($p, 1);
                 $value = true;
@@ -69,10 +69,11 @@ class Helper
                 }
 
                 // check if next parameter is a descriptor or a value
-                $nxParam = current($params);
+                $tmpval  = current($params);
+                $nxParam = next($params);
 
                 if (!in_array($pName, $noOpts) && $value === true && $nxParam !== false && $nxParam[0] !== '-') {
-                    $value = current($params);
+                    $value = $tmpval;
                 }
 
                 $result[$pName] = $value;

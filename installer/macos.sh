@@ -6,8 +6,7 @@ mkdir -p /opt
 touch /opt/async.log
 chmod 777 /opt/async.log
 DTACH=$(which dtach)
-uID=$(id -u)
-cd ~/Library/LaunchAgents/
+# uID=$(id -u)
 
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
@@ -16,6 +15,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
   <dict>
     <key>Label</key>
     <string>com.esoftplay.async</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>PATH</key>
+      <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
     <key>ProgramArguments</key>
     <array>
       <string>'$DTACH'</string>
@@ -29,9 +33,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
     <key>KeepAlive</key>
     <true/>
   </dict>
-</plist>'  > com.esoftplay.async.plist
-/bin/launchctl load com.esoftplay.async.plist
+</plist>'  > ~/Library/LaunchAgents/com.esoftplay.async.plist
+launchctl unload -w ~/Library/LaunchAgents/com.esoftplay.async.plist
+launchctl load -w ~/Library/LaunchAgents/com.esoftplay.async.plist
 
 # launchctl bootout gui/${uID} com.esoftplay.async.plist
-launchctl bootstrap gui/${uID} com.esoftplay.async.plist
-launchctl kickstart -k gui/${uID}/com.esoftplay.async
+# launchctl bootstrap gui/${uID} com.esoftplay.async.plist
+# launchctl kickstart -k gui/${uID}/com.esoftplay.async

@@ -1,33 +1,14 @@
 #!/usr/bin/env sh
-BASEDIR=$(dirname $(dirname "$0"))
-PHP=$(which php)
-SVR=127.0.0.1:5888
-mkdir -p $BASEDIR/logs
+
 brew tap homebrew/services
-brew install gearman
-brew services start gearman
-echo '<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
-"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-  <dict>
-    <key>Label</key>
-    <string>com.esoftplay.watcher</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>'$PHP'</string>
-        <string>-S</string>
-        <string>'$SVR'</string>
-        <string>-t</string>
-        <string>'$BASEDIR'/web</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
-  </dict>
-</plist>'  > ~/Library/LaunchAgents/com.esoftplay.watcher.plist
-/bin/launchctl load ~/Library/LaunchAgents/com.esoftplay.watcher.plist
+brew install dtach
+mkdir -p /opt
+touch /opt/async.log
+chmod 777 /opt/async.log
+DTACH=$(which dtach)
+uID=$(id -u)
+cd ~/Library/LaunchAgents/
+
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
 "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -37,14 +18,20 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
     <string>com.esoftplay.async</string>
     <key>ProgramArguments</key>
     <array>
-        <string>'$PHP'</string>
-        <string>'$BASEDIR'/bin/manager.php</string>
-        <string>start</string>
+      <string>'$DTACH'</string>
+      <string>-A</string>
+      <string>/tmp/async.socket</string>
+      <string>/bin/sh</string>
+      <string>/var/www/html/master/includes/system/docker/esoftplay_worker</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
     <true/>
   </dict>
-</plist>'  > ~/Library/LaunchAgents/com.esoftplay.async.plist
-/bin/launchctl load ~/Library/LaunchAgents/com.esoftplay.async.plist
+</plist>'  > com.esoftplay.async.plist
+/bin/launchctl load com.esoftplay.async.plist
+
+# launchctl bootout gui/${uID} com.esoftplay.async.plist
+launchctl bootstrap gui/${uID} com.esoftplay.async.plist
+launchctl kickstart -k gui/${uID}/com.esoftplay.async

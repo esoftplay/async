@@ -23,7 +23,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
     <key>ProgramArguments</key>
     <array>
       <string>'$DTACH'</string>
-      <string>-A</string>
+      <string>-n</string>
       <string>/tmp/async.socket</string>
       <string>/bin/sh</string>
       <string>/var/www/html/master/includes/system/docker/esoftplay_worker</string>
